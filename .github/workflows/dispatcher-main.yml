@@ -44,7 +44,7 @@ jobs:
       # Debugging output
       - name: Debug Trigger
         run: |
-          echo needs.detect-changes.outputs.changed
+          echo contains(needs.detect-changes.outputs.changed, 'PHP8_2')
 
       - name: Trigger PHP74
         if: contains(needs.detect-changes.outputs.changed, '7_4')
