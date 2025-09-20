@@ -19,7 +19,7 @@ jobs:
         uses: dorny/paths-filter@v3
         with:
           filters: |
-            php8_2:
+            PHP8_2:
               - 'docker/8_2/**'
       
       # Convierte los filtros en una sola cadena de versiones
@@ -27,7 +27,7 @@ jobs:
         id: collect
         run: |
           CHANGED=""
-          if [ "${{ steps.filter.outputs.php8_2 }}" = "true" ]; then CHANGED="$CHANGED php8_2"; fi
+          if [ "${{ steps.filter.outputs.PHP8_2 }}" = "true" ]; then CHANGED="$CHANGED PHP8_2"; fi
           echo "changed=$CHANGED" >> $GITHUB_OUTPUT
 
 
@@ -48,7 +48,7 @@ jobs:
           workflow: php81-build.yml
           ref: main
       - name: Trigger PHP82
-        if: contains(needs.detect-changes.outputs.changed, 'php8_2')
+        if: contains(needs.detect-changes.outputs.changed, 'PHP8_2')
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: php82-build.yml
