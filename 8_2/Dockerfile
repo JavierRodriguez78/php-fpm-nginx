@@ -59,10 +59,8 @@ RUN apt-get install -y libonig-dev
 RUN docker-php-ext-install mbstring
 RUN curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s \
       http
-
 RUN apt-get update -y && apt-get install -y libwebp-dev libjpeg62-turbo-dev libpng-dev libxpm-dev \
     libfreetype6-dev zlib1g-dev libzip-dev
-
 RUN docker-php-ext-install zip
 RUN docker-php-ext-install gd
 
