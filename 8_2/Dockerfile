@@ -116,8 +116,8 @@ RUN echo 'max_execution_time = 600' >> /usr/local/etc/php/php.ini
 # RUN echo 'opcache.jit=1255' >> /usr/local/etc/php/php.ini
 
 ##Install Symfony Cli
-RUN wget https://get.symfony.com/cli/installer -O - | bash
-RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
+# RUN wget https://get.symfony.com/cli/installer -O - | bash
+# RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
 
 #Clean
 RUN rm -rf /var/lib/apt/lists/*
