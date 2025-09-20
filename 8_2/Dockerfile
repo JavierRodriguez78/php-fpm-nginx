@@ -39,8 +39,6 @@ ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN echo '[PHP]\ndate.timezone ="Europe/Madrid"' > /usr/local/etc/php/php.ini
 
-
-
 #PHP Extensions
 RUN apt-get install -y libxml2-dev libmcrypt-dev libcurl4-openssl-dev
 RUN docker-php-ext-install bcmath
