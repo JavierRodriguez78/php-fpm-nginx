@@ -29,3 +29,11 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:8_2
             ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:8
             ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:latest
+      
+      - name: Trivy Scan PHP 8.2
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:php82
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
