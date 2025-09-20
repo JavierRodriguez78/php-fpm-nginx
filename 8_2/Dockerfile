@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get install -y \
     nginx
 
-#Php 8.0
+#Php Unit 8.0
 RUN wget -O phpunit.phar https://phar.phpunit.de/phpunit-8.0.6.phar && \
     chmod +x phpunit.phar &&  cp phpunit.phar /usr/local/lib/php
 
@@ -74,17 +74,6 @@ RUN apt-get update; \
     pecl install imagick; \
     docker-php-ext-enable imagick;
 
-##MSQL
-# RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-#     && curl https://packages.microsoft.com/config/debian/9/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-#     && apt-get update \
-#     && apt-get -y --no-install-recommends install msodbcsql17 unixodbc-dev \
-#     && pecl install sqlsrv \
-#     && pecl install pdo_sqlsrv \
-#     && echo "extension=pdo_sqlsrv.so" >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-pdo_sqlsrv.ini \
-#     && echo "extension=sqlsrv.so" >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-sqlsrv.ini \
-#     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
-
 ##Install apmq
 RUN pecl install amqp \
 && docker-php-ext-enable amqp
@@ -108,16 +97,6 @@ RUN echo 'memory_limit = 512M' >> /usr/local/etc/php/php.ini
 
 ##MODIFY TIME OUT
 RUN echo 'max_execution_time = 600' >> /usr/local/etc/php/php.ini
-
-##JIT en PHP8
-# RUN echo 'opcache.enable=1' >> /usr/local/etc/php/php.ini
-# RUN echo 'opcache.enable_cli=1' >> /usr/local/etc/php/php.ini
-# RUN echo 'opcache.jit_buffer_size=100M' >> /usr/local/etc/php/php.ini
-# RUN echo 'opcache.jit=1255' >> /usr/local/etc/php/php.ini
-
-##Install Symfony Cli
-# RUN wget https://get.symfony.com/cli/installer -O - | bash
-# RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
 
 #Clean
 RUN rm -rf /var/lib/apt/lists/*
