@@ -27,7 +27,7 @@ jobs:
         id: collect
         run: |
           CHANGED=""
-          if [ "${{ steps.filter.outputs.PHP8_2 }}" = "true" ]; then CHANGED="$CHANGED PHP8_2"; fi
+          if [ "${{ steps.filter.outputs.PHP8_2 }}" = "true" ]; then CHANGED="PHP8_2"; fi
           echo "changed=$CHANGED" >> $GITHUB_OUTPUT
 
 

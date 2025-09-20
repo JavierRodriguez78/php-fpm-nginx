@@ -1,6 +1,7 @@
 FROM php:8.2-fpm AS php-fpm82-nginx
 ARG TIMEZONE
 
+#Metadata
 LABEL Maintainer="email@javier-rodriguez.com"
 
 #Configuration
