@@ -19,10 +19,6 @@ jobs:
         uses: dorny/paths-filter@v3
         with:
           filters: |
-            7_4:
-              - 'docker/7_4/**'
-            8_1:
-              - 'docker/8_1/**'
             8_2:
               - 'docker/8_2/**'
       
@@ -31,8 +27,6 @@ jobs:
         id: collect
         run: |
           CHANGED=""
-          if [ "${{ steps.filter.outputs.7_4 }}" = "true" ]; then CHANGED="$CHANGED 7_4"; fi
-          if [ "${{ steps.filter.outputs.8_1 }}" = "true" ]; then CHANGED="$CHANGED 8_1"; fi
           if [ "${{ steps.filter.outputs.8_2 }}" = "true" ]; then CHANGED="$CHANGED 8_2"; fi
           echo "changed=$CHANGED" >> $GITHUB_OUTPUT
 
