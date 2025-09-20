@@ -21,8 +21,8 @@ RUN apt-get update && apt-get install -y \
     lsof \
     apt-utils \
     librabbitmq-dev  
-
-
+    
+#Install Nginx
 RUN apt-get install -y \
     nginx
 

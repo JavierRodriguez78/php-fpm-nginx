@@ -20,7 +20,7 @@ jobs:
         with:
           filters: |
             PHP8_2:
-              - 'docker/8_2/**'
+              - '/PHP8_2/**'
       
       # Convierte los filtros en una sola cadena de versiones
       - name: Collect changed versions
