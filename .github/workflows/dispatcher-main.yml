@@ -27,7 +27,7 @@ jobs:
         id: collect
         run: |
           CHANGED=""
-          if [ "${{ steps.filter.outputs.PHP8_2 }}" == "true" ]; then CHANGED="PHP8_2"; fi
+          if [ "${{ steps.filter.outputs.PHP8_2 }}" == "true" ]; then CHANGED=" ${{CHANGED}} PHP8_2"; fi
           echo "changed=$CHANGED" >> $GITHUB_OUTPUT
       
       # Debugging output
@@ -53,7 +53,7 @@ jobs:
           workflow: php81-build.yml
           ref: main
       - name: Trigger PHP82
-        if: steps.filter.outputs.PHP8_2 == 'true'
+        if: contains(needs.detect-changes.outputs.changed, 'PHP8_2')
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: php82-build.yml
