@@ -1,0 +1,35 @@
+name: Update DockerHub Description
+on:
+  workflow_run:
+    workflows: ["Build PHP 7.4", "Build PHP 8.1", "Build PHP 8.2"]
+    types:
+      - completed
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate tag list
+        run: |
+          echo "# PHP-FPM + Nginx Images 🚀" > DOCKERHUB.md
+          echo "" >> DOCKERHUB.md
+          echo "Imágenes Docker generadas automáticamente." >> DOCKERHUB.md
+          echo "" >> DOCKERHUB.md
+          echo "## Tags disponibles" >> DOCKERHUB.md
+          echo "- php74" >> DOCKERHUB.md
+          echo "- php81" >> DOCKERHUB.md
+          echo "- php82" >> DOCKERHUB.md
+          echo "- 7" >> DOCKERHUB.md
+          echo "- 8" >> DOCKERHUB.md
+          echo "- latest" >> DOCKERHUB.md
+
+      - name: Update DockerHub description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx
+          short-description: "Imágenes PHP-FPM + Nginx multi-arch"
+          readme-filepath: ./DOCKERHUB.md
