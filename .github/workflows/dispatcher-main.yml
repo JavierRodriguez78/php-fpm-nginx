@@ -59,7 +59,7 @@ jobs:
           workflow: php82-build.yml
           ref: main
       # Debugging output
-      - name: Debug
+      - name: Debug Trigger
         run: |
           echo "contain ${{ needs.detect-changes.outputs.changed }}"
 
