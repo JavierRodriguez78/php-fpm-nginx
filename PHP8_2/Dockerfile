@@ -102,6 +102,7 @@ COPY nginx-site.conf /etc/nginx/sites-enabled/default
 COPY entrypoint.sh /etc/entrypoint.sh
 RUN chmod +x /etc/entrypoint.sh
 
+#Work Directory
 WORKDIR /var/www
 
 EXPOSE 80 443
