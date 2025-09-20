@@ -59,7 +59,7 @@ jobs:
           workflow: php81-build.yml
           ref: main
       - name: Trigger PHP82
-        if: contains(needs.detect-changes.outputs.changed, 'PHP8_2')
+        if: steps.filter.outputs.PHP8_2 == 'true'
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: php82-build.yml
