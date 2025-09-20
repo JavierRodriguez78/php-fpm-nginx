@@ -1,0 +1,45 @@
+name: Master Dispatcher
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.filter.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: filter
+        run: |
+          CHANGED=""
+          if git diff --name-only HEAD~1 | grep -q '^docker/7_4/'; then CHANGED="$CHANGED 7_4"; fi
+          if git diff --name-only HEAD~1 | grep -q '^docker/8_1/'; then CHANGED="$CHANGED 8_1"; fi
+          if git diff --name-only HEAD~1 | grep -q '^docker/8_2/'; then CHANGED="$CHANGED 8_2"; fi
+          echo "changed=$CHANGED" >> $GITHUB_OUTPUT
+
+  dispatch-builds:
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger PHP74
+        if: contains(needs.detect-changes.outputs.changed, '7_4')
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: php74-build.yml
+          ref: main
+      - name: Trigger PHP81
+        if: contains(needs.detect-changes.outputs.changed, '8_1')
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: php81-build.yml
+          ref: main
+      - name: Trigger PHP82
+        if: contains(needs.detect-changes.outputs.changed, '8_2')
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: php82-build.yml
+          ref: main
