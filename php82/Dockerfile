@@ -8,7 +8,6 @@ LABEL Maintainer="email@javier-rodriguez.com"
 ENV ACCEPT_EULA=Y
 ARG DEBIAN_FRONTEND=noninteractive
 
-
 #Utilities
 RUN apt-get update && apt-get install -y \
     git \
