@@ -9,53 +9,64 @@ jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
-      changed: ${{ steps.filter.outputs.changed }}
+      changed: ${{ steps.collect.outputs.changed }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Detecta qué carpetas han cambiado
-      - name: Filter changed folders
+      - name: Detect changed folders
         id: filter
         uses: dorny/paths-filter@v3
         with:
+          base: 'main'
           filters: |
-            PHP8_2:
-              - 'PHP8_2/**'
-      
-      # Convierte los filtros en una sola cadena de versiones
+            php74:
+              - 'Dockerfiles/php74/**'
+            php81:
+              - 'Dockerfiles/php81/**'
+            php82:
+              - 'Dockerfiles/php82/**'
+
+      - name: Debug filters
+        run: |
+          echo "php74 => ${{ steps.filter.outputs.php74 }}"
+          echo "php81 => ${{ steps.filter.outputs.php81 }}"
+          echo "php82 => ${{ steps.filter.outputs.php82 }}"
+
       - name: Collect changed versions
         id: collect
         run: |
           CHANGED=""
-          if [ "${{ steps.filter.outputs.PHP8_2 }}" == "true" ]; then CHANGED=" ${{CHANGED}} PHP8_2"; fi
+          for v in php74 php81 php82; do
+            if [ "${{ steps.filter.outputs[$v] }}" = "true" ]; then
+              CHANGED="$CHANGED $v"
+            fi
+          done
           echo "changed=$CHANGED" >> $GITHUB_OUTPUT
-      
-      # Debugging output
-      - name: Debug
-        run: |
-          echo "php8_2 => ${{ steps.filter.outputs.PHP8_2 }}"
-
 
   dispatch-builds:
     needs: detect-changes
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger PHP74
-        if: contains(needs.detect-changes.outputs.changed, '7_4')
+      - name: Trigger php74 build
+        if: contains(needs.detect-changes.outputs.changed, 'php74')
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: php74-build.yml
           ref: main
-      - name: Trigger PHP81
-        if: contains(needs.detect-changes.outputs.changed, '8_1')
+
+      - name: Trigger php81 build
+        if: contains(needs.detect-changes.outputs.changed, 'php81')
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: php81-build.yml
           ref: main
-      - name: Trigger PHP82
-        if: contains(needs.detect-changes.outputs.changed, 'PHP8_2')
+
+      - name: Trigger php82 build
+        if: contains(needs.detect-changes.outputs.changed, 'php82')
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: php82-build.yml
           ref: main
-      
