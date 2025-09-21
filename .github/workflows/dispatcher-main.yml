@@ -23,11 +23,11 @@ jobs:
           base: 'main'
           filters: |
             php74:
-              - 'Dockerfiles/php74/**'
+              - 'php74/**'
             php81:
-              - 'Dockerfiles/php81/**'
+              - 'php81/**'
             php82:
-              - 'Dockerfiles/php82/**'
+              - 'php82/**'
 
       - name: Debug filters
         run: |
