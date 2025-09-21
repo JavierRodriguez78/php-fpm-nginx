@@ -39,11 +39,9 @@ jobs:
         id: collect
         run: |
           CHANGED=""
-          for v in php74 php81 php82; do
-            if [ "${{ steps.filter.outputs[$v] }}" = "true" ]; then
-              CHANGED="$CHANGED $v"
-            fi
-          done
+          if [ "${{ steps.filter.outputs.php74 }}" = "true" ]; then CHANGED="$CHANGED php74"; fi
+          if [ "${{ steps.filter.outputs.php81 }}" = "true" ]; then CHANGED="$CHANGED php81"; fi
+          if [ "${{ steps.filter.outputs.php82 }}" = "true" ]; then CHANGED="$CHANGED php82"; fi
           echo "changed=$CHANGED" >> $GITHUB_OUTPUT
 
   dispatch-builds:
