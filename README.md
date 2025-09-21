@@ -6,6 +6,8 @@
 
 ![Packagist PHP Version Support](https://img.shields.io/badge/php-%5E8.2-blue)
 
+## Seguridad
+Nivel de seguridad actual: <!--TRIVY_LEVEL-->❓<!--TRIVY_LEVEL-->
 
 Docker file for use in PHP Symfony support for php XX.
 - Laravel
