@@ -37,3 +37,26 @@ jobs:
           format: 'table'
           exit-code: '1'
           severity: 'CRITICAL'
+      
+      - name: Extract Trivy summary
+        id: summary
+        run: |
+          CRITICAL=$(jq '.Results[].Vulnerabilities[]? | select(.Severity=="CRITICAL")' trivy-report.json | wc -l)
+          HIGH=$(jq '.Results[].Vulnerabilities[]? | select(.Severity=="HIGH")' trivy-report.json | wc -l)
+          if [ "$CRITICAL" -gt 0 ]; then
+            LEVEL="CRITICAL"
+          elif [ "$HIGH" -gt 0 ]; then
+            LEVEL="HIGH"
+          else
+            LEVEL="SAFE"
+          fi
+          echo "level=$LEVEL" >> $GITHUB_OUTPUT
+      
+      - name: Update README with Trivy result
+        run: |
+          sed -i "s|<!--TRIVY_LEVEL-->.*<!--TRIVY_LEVEL-->|<!--TRIVY_LEVEL-->${{ steps.summary.outputs.level }}<!--TRIVY_LEVEL-->|" README.md
+        
+      - name: Commit README
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update Trivy security level [skip ci]"
