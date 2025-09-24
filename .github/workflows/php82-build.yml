@@ -1,6 +1,12 @@
 name: Build PHP 8.2
 on:
   workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,7 +36,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:php8
             ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:latest
       
-      - name: Trivy Scan PHP 8.2
+      - name: Trivy Scan PHP 8.2  (table)
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:php82
@@ -38,6 +44,27 @@ jobs:
           exit-code: '1'
           severity: 'CRITICAL'
       
+      # --- Escaneo Trivy en formato SARIF para GitHub Security ---
+      - name: Trivy Scan PHP 8.2 (sarif)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:php82
+          format: 'sarif'
+          output: 'trivy-report.sarif'
+          ignore-unfixed: true
+          severity: 'HIGH,CRITICAL'
+     
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-report.sarif
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-report.sarif
+      
+      # --- Resumen para README u otros usos --- 
       - name: Extract Trivy summary
         id: summary
         run: |
@@ -51,13 +78,3 @@ jobs:
             LEVEL="SAFE"
           fi
           echo "level=$LEVEL" >> $GITHUB_OUTPUT
-      
-      - name: Update README with Trivy result
-        run: |
-          sed -i "s|<!--TRIVY_LEVEL-->.*<!--TRIVY_LEVEL-->|<!--TRIVY_LEVEL-->${{ steps.summary.outputs.level }}<!--TRIVY_LEVEL-->|" README.md
-        
-      - name: Commit README
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: update Trivy security level [skip ci]"
-          token: ${{ secrets.GH_PAT }}
