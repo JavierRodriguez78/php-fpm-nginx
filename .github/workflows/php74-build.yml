@@ -1,0 +1,80 @@
+name: Build PHP 7.4
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push PHP 7.4 image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./php74
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:php74
+            ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:php7
+            ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:latest
+      
+      - name: Trivy Scan PHP 7.4  (table)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:php74
+          format: 'table'
+          exit-code: '1'
+          severity: 'CRITICAL'
+      
+      # --- Escaneo Trivy en formato SARIF para GitHub Security ---
+      - name: Trivy Scan PHP 7.4 (sarif)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/php-fpm-nginx:php74
+          format: 'sarif'
+          output: 'trivy-report.sarif'
+          ignore-unfixed: true
+          severity: 'HIGH,CRITICAL'
+     
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-report.sarif
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-report.sarif
+      
+      # --- Resumen para README u otros usos --- 
+      - name: Extract Trivy summary
+        id: summary
+        run: |
+          CRITICAL=$(jq '.Results[].Vulnerabilities[]? | select(.Severity=="CRITICAL")' trivy-report.json | wc -l)
+          HIGH=$(jq '.Results[].Vulnerabilities[]? | select(.Severity=="HIGH")' trivy-report.json | wc -l)
+          if [ "$CRITICAL" -gt 0 ]; then
+            LEVEL="CRITICAL"
+          elif [ "$HIGH" -gt 0 ]; then
+            LEVEL="HIGH"
+          else
+            LEVEL="SAFE"
+          fi
+          echo "level=$LEVEL" >> $GITHUB_OUTPUT
