@@ -51,7 +51,6 @@ RUN docker-php-ext-install pdo
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-install mysqli
 RUN docker-php-ext-install curl
-RUN pecl install xmlrpc-1.0.0RC3
 RUN docker-php-ext-install xmlwriter
 RUN docker-php-ext-install xml
 RUN docker-php-ext-install opcache
