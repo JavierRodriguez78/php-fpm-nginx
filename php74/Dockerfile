@@ -75,7 +75,7 @@ RUN pecl install amqp \
 && docker-php-ext-enable amqp
 
 ##Configuración XDEBug
-RUN pecl install xdebug
+RUN pecl install xdebug-3.1.5
 RUN docker-php-ext-enable xdebug
 RUN echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
