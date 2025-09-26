@@ -46,7 +46,6 @@ RUN apt-get install -y libxml2-dev libmcrypt-dev libcurl4-openssl-dev
 RUN docker-php-ext-install bcmath
 RUN docker-php-ext-install pcntl
 RUN docker-php-ext-install sockets
-RUN docker-php-ext-install dom
 RUN docker-php-ext-install session
 RUN docker-php-ext-install pdo
 RUN docker-php-ext-install pdo_mysql
