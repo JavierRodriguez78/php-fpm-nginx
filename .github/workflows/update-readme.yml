@@ -1,7 +1,7 @@
 name: Update DockerHub Description
 on:
   workflow_run:
-    workflows: ["Build PHP 7.4", "Build PHP 8.1", "Build PHP 8.2"]
+    workflows: ["Build PHP 7.4", "Build PHP 8.2", "Build PHP 8.4"]
     types:
       - completed
 
@@ -19,8 +19,8 @@ jobs:
           echo "" >> DOCKERHUB.md
           echo "## Tags disponibles" >> DOCKERHUB.md
           echo "- php74" >> DOCKERHUB.md
-          echo "- php81" >> DOCKERHUB.md
           echo "- php82" >> DOCKERHUB.md
+          echo "- php84" >> DOCKERHUB.md
           echo "- 7" >> DOCKERHUB.md
           echo "- 8" >> DOCKERHUB.md
           echo "- latest" >> DOCKERHUB.md

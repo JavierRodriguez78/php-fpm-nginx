@@ -28,24 +28,24 @@ jobs:
           filters: |
             php74:
               - 'php74/**'
-            php81:
-              - 'php81/**'
             php82:
               - 'php82/**'
+            php84:
+              - 'php84/**'
 
       - name: Debug filters
         run: |
           echo "php74 => ${{ steps.filter.outputs.php74 }}"
-          echo "php81 => ${{ steps.filter.outputs.php81 }}"
           echo "php82 => ${{ steps.filter.outputs.php82 }}"
+          echo "php84 => ${{ steps.filter.outputs.php84 }}"
 
       - name: Collect changed versions
         id: collect
         run: |
           CHANGED=""
           if [ "${{ steps.filter.outputs.php74 }}" = "true" ]; then CHANGED="$CHANGED php74"; fi
-          if [ "${{ steps.filter.outputs.php81 }}" = "true" ]; then CHANGED="$CHANGED php81"; fi
           if [ "${{ steps.filter.outputs.php82 }}" = "true" ]; then CHANGED="$CHANGED php82"; fi
+          if [ "${{ steps.filter.outputs.php84 }}" = "true" ]; then CHANGED="$CHANGED php84"; fi
           echo "changed=$CHANGED" >> $GITHUB_OUTPUT
 
   dispatch-builds:
@@ -59,16 +59,16 @@ jobs:
           workflow: php74-build.yml
           ref: main
 
-      - name: Trigger php81 build
-        if: contains(needs.detect-changes.outputs.changed, 'php81')
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: php81-build.yml
-          ref: main
-
       - name: Trigger php82 build
         if: contains(needs.detect-changes.outputs.changed, 'php82')
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: php82-build.yml
+          ref: main
+
+      - name: Trigger php84 build
+        if: contains(needs.detect-changes.outputs.changed, 'php84')
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: php84-build.yml
           ref: main
